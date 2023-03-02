@@ -1,41 +1,8 @@
 % OSA model code for patient case
 clear; clc; close all;
 
-% Physiological parameters
-HRi = 73; %beats/min (heart rate)
-SV = 70; %mL/beat (stroke volume)
-CO = HRi*SV/60; %mL/s (cardiac output)
-Qpi = CO; %mL/min (pulmonary flow)
-Qsi = CO; %mL/min (systemic flow)
-R = 62360; %mmHg mL/mol K (ideal gas constant)
-T = 310; %K (body temperature)
-VT = 500; %mL (tidal volume)
-br = 12/60; % breaths/s (breathing rate)
-yO2 = 0.21; % (mol fraction of O2 in inspired air)
-PB = 760; % mmHg (barometric pressure)
-PH2O = 47; % mmHg (vapor pressure at 37C, saturation)
-VD = 150; %mL (dead space volume)
-Beta_p = 1.4e-9; % mol O2/mL blood mmHg (solubility of O2 in plasma) (Frank et al. A finite element method of oxygen diffusion in the pulmonary capillaries)
-CHb = 2.3e-6; %mol/mL (concentration of hemoglobin in blood) (Source: Erratum to: Blood HbO2 and HbCO2 dissociation curves at varied O2, CO2, pH, 2,3-DPG and temperature levels)
-nV = 1/22400; %mol/mL (Conversion factor at Body temperature)
-PAO2i = 104; %mmHg (initial pulmonary venous oxygen partial pressure)
-Vsys = 4600; %mL (volume of blood in systemic circulation)
-Vsysa = 770; %mL (volume of blood in systemic arteries + aorta) 
-Vsyscap = 330; %mL (volume of blood in systemic capillaries)
-tcyclei = Vsys/Qsi; %s (time for blood to pass through systemic circulation)
-tsysai = Vsysa/Qsi; %s (time for blood to pass from exit of lungs to systemic capillaries)
-tsyscapi = Vsyscap/Qsi; %s (time for blood to pass through systemic capillaries)
-DLO2 = 21/60; %mLO2/s mmHg
-Aeff = 3000; %cm/3 (total pulmonary capillary cross-sectional area)
-Vpc = 130; %mL (volume of blood in pulmonary capillaries)
-vpci = Qpi/Aeff;
-Lc = Vpc/Aeff; %cm (length of pulmonary capillary compartment)
-A = 122*100^2; %cm^2 (total surface area for gas exchange)
-l_mem = 2e-4; % cm (alveolar-capillary membrane thickness)
-MRO2 = 240*nV/60; % molO2/s (basal metabolic rate for all tissues)
-DLO2_b = (DLO2*nV)/Beta_p;
-D_O2 = DLO2_b*l_mem/A;
-k_l = D_O2*A/l_mem;
+% Load physiological parameters
+load OSAParameters.mat
 pars = [yO2, PB, PH2O, R, T, Beta_p, k_l];
 
 
@@ -58,7 +25,7 @@ dti = 0.007; % Time step for each iteration of for loop
 dzi = vpci*dti; % Differential distance for capillary profile IC
 k = floor(Lc/dzi);
 n_dti = floor(tcyclei/dti);
-a_dti = floor(tsysai/dti);
+a_dti = floor(tsai/dti);
 c_dti = floor(tsyscapi/dti);
 prompt2 = "Enter total time for data in minutes";
 total_t = input(prompt2); % Total time in seconds
@@ -76,7 +43,7 @@ HR = zeros(1,s); Qp = zeros(1,s); Qs = zeros(1,s);
 CpcO2T = zeros(k+1,s); CpcO2d = zeros(k+1,s); SpcO2 = zeros(k+1,s); PpcO2 = zeros(k+1,s);
 z1 = zeros(k+1,1); vpc = zeros(1,s);
 dt = zeros(1,s); n_dt = zeros(1,s); a_dt = zeros(1,s); c_dt = zeros(1,s); 
-tcycle = zeros(1,s); tsyscap = zeros(1,s); tsysa = zeros(1,s);
+tcycle = zeros(1,s); tsyscap = zeros(1,s); tsa = zeros(1,s);
 CpcO2T1 = zeros(k+1,1); CpcO2d1 = zeros(k+1,1);
 V = zeros(1,s);
 
@@ -126,7 +93,7 @@ t(1) = 0;
 HR(1) = HRi; Qp(1) = Qpi; Qs(1) = Qsi; vpc(1) = vpci;
 dt(1) = dti;
 n_dt(1) = n_dti; c_dt(1) = c_dti; a_dt(1) = a_dti;
-tcycle(1) = tcyclei; tsysa(1) = tsysai; tsyscap(1) = tsyscapi;
+tcycle(1) = tcyclei; tsa(1) = tsai; tsyscap(1) = tsyscapi;
 
 for i=2:s
             %Time
@@ -143,11 +110,11 @@ for i=2:s
             %Times
             tcycle(i) = Vsys/Qs(i);
             tsyscap(i) = Vsyscap/Qs(i);
-            tsysa(i) = Vsysa/Qs(i);
+            tsa(i) = Vsysa/Qs(i);
             dt(i) = tcycle(i)*dti/tcyclei;
             n_dt(i) = floor(tcycle(i)/dt(i));
             c_dt(i) = floor(tsyscap(i)/dt(i));
-            a_dt(i) = floor(tsysa(i)/dt(i));
+            a_dt(i) = floor(tsa(i)/dt(i));
             vpc(i) = Qp(i)/Aeff;
            
             %Calculate arterial oxygenation
