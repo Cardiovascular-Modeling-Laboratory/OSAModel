@@ -1,4 +1,5 @@
-% OSA model code for patient case
+% OSA model code for patient case 
+% Use with OSA_Patient file (Total time for data ~ 129 minutes) 
 clear; clc; close all;
 
 % Load physiological parameters

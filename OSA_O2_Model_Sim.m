@@ -1,4 +1,9 @@
 % OSA model code for simulations
+% Use with Simulationx, SevereOSA, and Normal files
+% Total time for data:
+    % Simualtionx - 16 minutes
+    % SevereOSA - 9.3 minutes
+    % Normal - 10 minutes
 clear; clc; close all;
 
 % Load physiological parameters
