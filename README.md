@@ -2,7 +2,7 @@
 # Code Inputs
 Simulation Code: The code uses a .mat input containing time and alveolar volume data. The time array should be labeled as t_vec, and the alveolar volume array should be labeled as Alv_Vol (both column arrays) This .mat file should be created before the code is run. 
 
-Patient Code: The code uses a .mat input containing time, alveolar volume, and heart rate data. The time array should be labeled as t_vec, the alveolar volume array should be labeled as Alv_Vol, and the heart rate array should be labeled as HR_vec (all column arrays). This .mat file should be created before the code is run.
+Patient Code: The code uses a .mat input containing time, lung volume, and heart rate data. The time array should be labeled as t_vec, the lung volume array should be labeled as L_Vol, and the heart rate array should be labeled as HR_vec (all column arrays). This .mat file should be created before the code is run.
 # Reference
 Cite this work using:
 
