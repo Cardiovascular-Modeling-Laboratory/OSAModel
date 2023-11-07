@@ -1,6 +1,5 @@
 % OSA model code for simulations
-% Use with Simulationx, SevereOSA, and Normal files
-% Total time for data:
+% Total time for data (used for paper):
     % Simualtionx - 16 minutes
     % SevereOSA - 9.3 minutes
     % Normal - 10 minutes
@@ -17,7 +16,7 @@ S_T = SatO2_2(Cd_T,Beta_p);
 CT_T = 4*CHb.*S_T + Cd_T;
 
 % Load breathing pattern file
-prompt = "Enter file name for breathing pattern"; % Ex. Simulation1 for Simulation 1
+prompt = "Enter file name for breathing pattern"; % Create a .mat file which contains time and alveolar volume data with variables named as below
 file = input(prompt,'s');
 Input = load(file,'t_vec','Alv_Vol');
 C = struct2cell(Input);
